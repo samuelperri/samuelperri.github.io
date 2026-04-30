@@ -1,287 +1,299 @@
-
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kenko · La macchina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet"/>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  #portfolio-root {
-    background: #000;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-    overflow-y: auto;
-    height: 600px;
-    scroll-behavior: smooth;
-  }
-  .section {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 40px;
-    position: relative;
-  }
-  .hero {
-    background: #000;
-    text-align: center;
-  }
-  .hero-eyebrow {
-    font-size: 13px;
-    letter-spacing: 0.15em;
-    color: #86868b;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .hero-title {
-    font-size: clamp(42px, 8vw, 72px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    margin-bottom: 18px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s;
-  }
-  .hero-sub {
-    font-size: 19px;
-    color: #86868b;
-    font-weight: 400;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease 0.25s, transform 0.8s ease 0.25s;
-  }
-  .scroll-hint {
-    position: absolute;
-    bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 1s ease 0.8s;
-  }
-  .scroll-hint span { font-size: 12px; color: #86868b; letter-spacing: 0.1em; }
-  .scroll-arrow {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, #86868b, transparent);
-    animation: pulse-down 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse-down {
-    0%, 100% { opacity: 0.3; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.1); }
-  }
-  .visible .hero-eyebrow,
-  .visible .hero-title,
-  .visible .hero-sub,
-  .visible .scroll-hint { opacity: 1; transform: translateY(0); }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --verde:#1F7A3A;
+  --nero:#0E0E0E;
+  --panna:#F3EFE8;
+  --grigio:#8F8F8F;
+  --font:'Jost',sans-serif;
+}
+html,body{height:100%;background:var(--nero);overflow:hidden}
+body{font-family:var(--font);color:var(--panna);display:flex;flex-direction:column}
 
-  .work-section { background: #000; border-top: 0.5px solid #1d1d1f; }
-  .section-label {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    color: #86868b;
-    text-transform: uppercase;
-    margin-bottom: 48px;
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    width: 100%;
-    max-width: 800px;
-  }
-  .card {
-    border-radius: 16px;
-    overflow: hidden;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(32px) scale(0.97);
-    transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s ease;
-    position: relative;
-  }
-  .card:nth-child(1) { transition-delay: 0.05s; }
-  .card:nth-child(2) { transition-delay: 0.15s; }
-  .card:nth-child(3) { transition-delay: 0.25s; }
-  .card:hover { transform: scale(1.03) !important; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-  .card-img {
-    width: 100%;
-    aspect-ratio: 3/4;
-    display: flex;
-    align-items: flex-end;
-    padding: 20px;
-    position: relative;
-  }
-  .card-img-bg {
-    position: absolute; inset: 0;
-    border-radius: 16px;
-  }
-  .card-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%);
-    border-radius: 16px;
-  }
-  .card-text { position: relative; z-index: 1; }
-  .card-title { font-size: 17px; font-weight: 500; margin-bottom: 4px; }
-  .card-cat { font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; }
+/* ── TOP: testo ── */
+#top{
+  flex-shrink:0;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:2.2rem 3rem 1.8rem;
+  border-bottom:1px solid rgba(243,239,232,0.05);
+}
 
-  .about-section { background: #000; border-top: 0.5px solid #1d1d1f; text-align: center; }
-  .about-title {
-    font-size: clamp(28px, 5vw, 52px);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .about-body {
-    font-size: 17px;
-    line-height: 1.7;
-    color: #86868b;
-    max-width: 520px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease 0.15s, transform 0.8s ease 0.15s;
-  }
-  .cta-section {
-    background: #000;
-    border-top: 0.5px solid #1d1d1f;
-    text-align: center;
-    gap: 32px;
-  }
-  .cta-label {
-    font-size: clamp(22px, 4vw, 40px);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .cta-btn {
-    display: inline-block;
-    padding: 14px 36px;
-    border-radius: 980px;
-    background: #fff;
-    color: #000;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s, background 0.2s;
-  }
-  .cta-btn:hover { background: #d1d1d6; }
-  .in-view .section-label,
-  .in-view .card,
-  .in-view .about-title,
-  .in-view .about-body,
-  .in-view .cta-label,
-  .in-view .cta-btn { opacity: 1; transform: translateY(0) scale(1); }
+.brand-col{display:flex;flex-direction:column;gap:0.4rem}
+.brand-row{display:flex;align-items:center;gap:0.65rem}
+.brand-name{font-size:10px;font-weight:700;letter-spacing:0.55em;text-transform:uppercase;color:var(--verde)}
+.brand-tagline{font-size:9px;font-weight:300;letter-spacing:0.4em;text-transform:uppercase;color:rgba(243,239,232,0.22)}
 
-  .nav {
-    position: sticky;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 40px;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(20px);
-    z-index: 100;
-    border-bottom: 0.5px solid #1d1d1f;
-  }
-  .nav-name { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; }
-  .nav-links { display: flex; gap: 28px; }
-  .nav-link { font-size: 13px; color: #86868b; cursor: pointer; transition: color 0.2s; }
-  .nav-link:hover { color: #fff; }
+.machine-col{text-align:center}
+.m-eyebrow{font-size:9px;font-weight:600;letter-spacing:0.45em;text-transform:uppercase;color:var(--verde);margin-bottom:0.35rem}
+.m-name{font-size:2rem;font-weight:200;line-height:1;color:var(--panna);letter-spacing:-0.02em}
+.m-name strong{font-weight:700}
+.m-name em{font-style:italic;color:rgba(243,239,232,0.35);font-weight:300}
+.m-specs{display:flex;gap:2rem;justify-content:center;margin-top:0.7rem}
+.sv{font-size:1.1rem;font-weight:600;color:var(--panna);line-height:1}
+.sk{font-size:8px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--grigio);margin-top:2px}
+
+.blend-col{text-align:right;max-width:220px}
+.blend-label{font-size:9px;font-weight:600;letter-spacing:0.45em;text-transform:uppercase;color:var(--verde);margin-bottom:0.5rem}
+.blend-body{font-size:0.8rem;font-weight:300;line-height:1.85;color:rgba(243,239,232,0.45)}
+.blend-body em{color:var(--panna);font-style:normal;font-weight:400}
+
+/* ── BOTTOM: 3D ── */
+#viewer{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  min-height:0;
+}
+#canvas{display:block;width:100%;height:100%}
+
+#loader{
+  position:absolute;inset:0;background:var(--nero);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.6rem;z-index:100;transition:opacity 0.8s;
+}
+#loader.hide{opacity:0;pointer-events:none}
+.l-logo{font-size:10px;font-weight:600;letter-spacing:0.55em;text-transform:uppercase;color:var(--verde)}
+.l-bar-wrap{width:90px;height:1px;background:rgba(255,255,255,0.07)}
+.l-bar{height:100%;width:0%;background:var(--verde);transition:width 0.3s}
+.l-txt{font-size:9px;letter-spacing:0.3em;color:rgba(243,239,232,0.22);text-transform:uppercase}
+
+#hint{
+  position:absolute;bottom:1.4rem;left:50%;transform:translateX(-50%);
+  font-size:9px;letter-spacing:0.35em;text-transform:uppercase;
+  color:rgba(243,239,232,0.15);pointer-events:none;white-space:nowrap;
+}
+#err-msg{
+  display:none;position:absolute;bottom:3.5rem;
+  left:50%;transform:translateX(-50%);width:360px;
+  background:rgba(14,14,14,0.95);border:1px solid rgba(243,239,232,0.07);
+  padding:1rem 1.2rem;font-size:11px;line-height:1.7;
+  color:rgba(243,239,232,0.4);text-align:center;
+}
+#err-msg strong{color:var(--verde)}
 </style>
+</head>
+<body>
 
-<div id="portfolio-root">
-  <nav class="nav">
-    <span class="nav-name">Marco Rossi</span>
-    <div class="nav-links">
-      <span class="nav-link" onclick="scrollTo('work')">Lavori</span>
-      <span class="nav-link" onclick="scrollTo('about')">Chi sono</span>
-      <span class="nav-link" onclick="scrollTo('contact')">Contatti</span>
+<!-- TOP: testo -->
+<div id="top">
+
+  <div class="brand-col">
+    <div class="brand-row">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+        <polygon points="16,2 30,28 2,28" stroke="#1F7A3A" stroke-width="2.2" fill="none"/>
+        <line x1="5" y1="20" x2="27" y2="20" stroke="#1F7A3A" stroke-width="2.2"/>
+        <polygon points="16,30 3,10 29,10" stroke="#1F7A3A" stroke-width="2.2" fill="none"/>
+      </svg>
+      <span class="brand-name">Kenko</span>
     </div>
-  </nav>
+    <div class="brand-tagline">The origin of quality</div>
+  </div>
 
-  <section class="section hero" id="hero">
-    <p class="hero-eyebrow">Fotografo & Videomaker</p>
-    <h1 class="hero-title">Cattura<br>ogni momento.</h1>
-    <p class="hero-sub">Milano · Roma · Ovunque tu sia</p>
-    <div class="scroll-hint">
-      <span>Scorri</span>
-      <div class="scroll-arrow"></div>
+  <div class="machine-col">
+    <div class="m-eyebrow">La nostra macchina</div>
+    <div class="m-name"><strong>Faema</strong> <em>E71e</em></div>
+    <div class="m-specs">
+      <div><div class="sv">9</div><div class="sk">Bar</div></div>
+      <div><div class="sv">93°</div><div class="sk">Celsius</div></div>
+      <div><div class="sv">25s</div><div class="sk">Estrazione</div></div>
+      <div><div class="sv">3</div><div class="sk">Gruppi</div></div>
     </div>
-  </section>
+  </div>
 
-  <section class="section work-section" id="work">
-    <p class="section-label">Progetti selezionati</p>
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-img">
-          <div class="card-img-bg" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);"></div>
-          <div class="card-overlay"></div>
-          <div class="card-text">
-            <p class="card-title">Ritratti urbani</p>
-            <p class="card-cat">FOTOGRAFIA</p>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-img">
-          <div class="card-img-bg" style="background: linear-gradient(135deg, #1b2838 0%, #2a475e 50%, #66c0f4 100%);"></div>
-          <div class="card-overlay"></div>
-          <div class="card-text">
-            <p class="card-title">Brand film 2024</p>
-            <p class="card-cat">VIDEO</p>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-img">
-          <div class="card-img-bg" style="background: linear-gradient(135deg, #2d1b33 0%, #4a1942 50%, #8b2252 100%);"></div>
-          <div class="card-overlay"></div>
-          <div class="card-text">
-            <p class="card-title">Matrimoni</p>
-            <p class="card-cat">FOTOGRAFIA · VIDEO</p>
-          </div>
-        </div>
-      </div>
+  <div class="blend-col">
+    <div class="blend-label">I nostri blend</div>
+    <div class="blend-body">
+      Ogni blend che serviamo<br>
+      passa attraverso questa macchina.<br>
+      <em>Estratto con precisione.</em><br>
+      Non per caso. Per scelta.
     </div>
-  </section>
+  </div>
 
-  <section class="section about-section" id="about">
-    <h2 class="about-title">Visione.<br>Luce. Emozione.</h2>
-    <p class="about-body">Racconto storie attraverso immagini e video. Ogni progetto è un viaggio unico, dove tecnica e sensibilità si incontrano per creare qualcosa di indimenticabile.</p>
-  </section>
-
-  <section class="section cta-section" id="contact">
-    <p class="cta-label">Lavoriamo insieme.</p>
-    <button class="cta-btn" onclick="sendPrompt('Voglio personalizzare il portfolio: come aggiungo le mie vere foto e modifico i testi?')">Personalizza il tuo portfolio ↗</button>
-  </section>
 </div>
 
+<!-- BOTTOM: 3D -->
+<div id="viewer">
+  <canvas id="canvas"></canvas>
+  <div id="loader">
+    <div class="l-logo">Kenko</div>
+    <div class="l-bar-wrap"><div class="l-bar" id="l-bar"></div></div>
+    <div class="l-txt" id="l-txt">Caricamento modello 3D</div>
+  </div>
+  <div id="hint">Trascina per ruotare · Scorri per zoomare</div>
+  <div id="err-msg"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-  function scrollTo(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  }
+const canvas  = document.getElementById('canvas');
+const viewer  = document.getElementById('viewer');
+const lBar    = document.getElementById('l-bar');
+const lTxt    = document.getElementById('l-txt');
+const loaderEl= document.getElementById('loader');
+const errMsg  = document.getElementById('err-msg');
 
-  const hero = document.querySelector('.hero');
-  setTimeout(() => hero.classList.add('visible'), 100);
+// ── Renderer ──
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.outputEncoding   = THREE.sRGBEncoding;
+renderer.toneMapping      = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+renderer.shadowMap.enabled = true;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('in-view');
+const scene  = new THREE.Scene();
+scene.background = new THREE.Color(0x0E0E0E);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100);
+camera.position.set(0, 0.1, 3.2);
+
+function resize(){
+  const w = viewer.clientWidth, h = viewer.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Lights ──
+scene.add(new THREE.AmbientLight(0xF3EFE8, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(3,4,3); key.castShadow = true; scene.add(key);
+const fill = new THREE.DirectionalLight(0xe0f0e0, 0.4);
+fill.position.set(-3,1,-2); scene.add(fill);
+const verde = new THREE.DirectionalLight(0x1F7A3A, 0.25);
+verde.position.set(0,3,-3); scene.add(verde);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+pmrem.compileEquirectangularShader();
+const env = pmrem.fromScene(new THREE.RoomEnvironment()).texture;
+scene.environment = env;
+
+// ── Orbit (manual) ──
+const pivot = new THREE.Object3D(); scene.add(pivot);
+let drag=false, px=0, py=0;
+let rX=0.05, rY=0.3, tX=0.05, tY=0.3;
+let zoom=3.2, tZoom=3.2;
+
+canvas.addEventListener('mousedown', e=>{ drag=true; px=e.clientX; py=e.clientY; });
+window.addEventListener('mouseup',   ()=>{ drag=false; });
+window.addEventListener('mousemove', e=>{
+  if(!drag) return;
+  tY += (e.clientX-px)*0.007;
+  tX += (e.clientY-py)*0.004;
+  tX = Math.max(-0.45, Math.min(0.45, tX));
+  px=e.clientX; py=e.clientY;
+});
+canvas.addEventListener('wheel', e=>{
+  tZoom += e.deltaY*0.003;
+  tZoom = Math.max(1.0, Math.min(6, tZoom));
+  e.preventDefault();
+}, {passive:false});
+let tpx=0, tpy=0;
+canvas.addEventListener('touchstart', e=>{ tpx=e.touches[0].clientX; tpy=e.touches[0].clientY; });
+canvas.addEventListener('touchmove', e=>{
+  tY += (e.touches[0].clientX-tpx)*0.01;
+  tX += (e.touches[0].clientY-tpy)*0.006;
+  tpx=e.touches[0].clientX; tpy=e.touches[0].clientY;
+  e.preventDefault();
+}, {passive:false});
+
+// ── Load GLB ──
+// Tentiamo più URL: proxy CORS, poi fallback diretto
+const FILE_ID = '1YPdZi3UV5aWAYLGZCsRjA_xvRQVDYe79';
+const URLS = [
+  `https://corsproxy.io/?https://drive.google.com/uc?export=download&id=${FILE_ID}`,
+  `https://api.allorigins.win/raw?url=${encodeURIComponent('https://drive.google.com/uc?export=download&id='+FILE_ID)}`,
+  `https://drive.google.com/uc?export=download&id=${FILE_ID}`,
+];
+
+const gs = document.createElement('script');
+gs.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+gs.onload = () => tryLoad(0);
+document.head.appendChild(gs);
+
+function tryLoad(idx){
+  if(idx >= URLS.length){ showError(); return; }
+  lTxt.textContent = 'Tentativo '+(idx+1)+'/'+URLS.length+'…';
+  lBar.style.width = '10%';
+
+  const loader = new THREE.GLTFLoader();
+  loader.load(
+    URLS[idx],
+    gltf => onLoaded(gltf),
+    xhr => {
+      const p = xhr.total>0 ? Math.round(xhr.loaded/xhr.total*80)+10 : 50;
+      lBar.style.width = p+'%';
+      lTxt.textContent = xhr.total>0 ? Math.round(xhr.loaded/1024)+' kb…' : 'Download…';
+    },
+    err => {
+      console.warn('URL '+idx+' fallito:', err);
+      tryLoad(idx+1);
+    }
+  );
+}
+
+function onLoaded(gltf){
+  lBar.style.width = '100%';
+  const model = gltf.scene;
+
+  // centra e scala
+  const box = new THREE.Box3().setFromObject(model);
+  const center = box.getCenter(new THREE.Vector3());
+  const size   = box.getSize(new THREE.Vector3());
+  const sc = 1.9 / Math.max(size.x, size.y, size.z);
+  model.scale.setScalar(sc);
+  model.position.sub(center.multiplyScalar(sc));
+
+  // migliora materiali
+  model.traverse(ch => {
+    if(!ch.isMesh) return;
+    ch.castShadow = true; ch.receiveShadow = true;
+    (Array.isArray(ch.material)?ch.material:[ch.material]).forEach(m=>{
+      m.envMap = env; m.envMapIntensity = 1.4; m.needsUpdate = true;
     });
-  }, { threshold: 0.15 });
+  });
 
-  document.querySelectorAll('.work-section, .about-section, .cta-section').forEach(s => observer.observe(s));
+  pivot.add(model);
+  setTimeout(()=>{
+    loaderEl.classList.add('hide');
+    setTimeout(()=>loaderEl.style.display='none', 900);
+  }, 300);
+}
+
+function showError(){
+  loaderEl.classList.add('hide');
+  setTimeout(()=>loaderEl.style.display='none', 900);
+
+  // placeholder minimal
+  const bMat = new THREE.MeshStandardMaterial({color:0x181818, metalness:0.85, roughness:0.15});
+  pivot.add(new THREE.Mesh(new THREE.BoxGeometry(2,0.85,0.55), bMat));
+  const bBase = new THREE.MeshStandardMaterial({color:0xb8b8b8, metalness:0.95, roughness:0.05});
+  const base = new THREE.Mesh(new THREE.BoxGeometry(2.15,0.13,0.65), bBase);
+  base.position.y = -0.5; pivot.add(base);
+
+  errMsg.style.display = 'block';
+  errMsg.innerHTML = `Il file <strong>.glb</strong> non può essere caricato via browser (CORS).<br>
+  Trascina il file su <strong>netlify.com/drop</strong> → copia il link → aggiornare il codice.`;
+}
+
+// ── Animate ──
+(function loop(){
+  requestAnimationFrame(loop);
+  rX += (tX-rX)*0.07; rY += (tY-rY)*0.07; zoom += (tZoom-zoom)*0.07;
+  pivot.rotation.x = rX; pivot.rotation.y = rY;
+  camera.position.z = zoom; camera.lookAt(0,0,0);
+  if(!drag) tY += 0.0015;
+  renderer.render(scene, camera);
+})();
 </script>
+</body>
+</html>
